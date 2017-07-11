@@ -24,8 +24,8 @@ jQuery.expr[':'].containsci = function (a, i, m) {
 
 var lssm = {
     config: {
-        //server: "https://localhost/lss-manager-v3",
-        server: "https://lss-manager.de/lss-entwicklung", // Domain wo alles liegt
+        server: "https://localhost/lss-manager-v3",
+        //server: "https://lss-manager.de/lss-entwicklung", // Domain wo alles liegt
         stats_uri: "https://proxy.lss-manager.de/stat.php",
         forum_link: "https://forum.leitstellenspiel.de/index.php/Thread/11166-LSS-MANAGER-V3/",
         version: "3.2.4",
@@ -1267,17 +1267,21 @@ lssm.managedSettings = {
         var moduleId = moduleSettings.id;
         var settingsKey;
         // If settings don't exist, overwrite with defaults
-        if (!lssm.settings.get(moduleId) || !lssm.settings.get(moduleId).settings) {
+        if (!lssm.settings.get(moduleId)) {
+        	console.log(1);
             for (settingsKey in moduleSettings.settings) {
                 moduleSettings.settings[settingsKey].value = moduleSettings.settings[settingsKey].default;
             }
             // If we have values use them
         } else {
-            var storedSettings = lssm.settings.get(moduleId).settings;
+        	console.log(2);
+            var storedSettings = lssm.settings.get(moduleId);
             for (settingsKey in moduleSettings.settings) {
-                if (storedSettings[settingsKey] && storedSettings[settingsKey].value) {
-                    moduleSettings.settings[settingsKey].value = storedSettings[settingsKey].value;
+                if (storedSettings[settingsKey]) {
+                	console.log(3);
+                    moduleSettings.settings[settingsKey].value = storedSettings[settingsKey];
                 } else {
+                	console.log(4);
                     moduleSettings.settings[settingsKey].value = moduleSettings.settings[settingsKey].default;
                 }
             }
@@ -1306,10 +1310,20 @@ lssm.managedSettings = {
 
     update: function (moduleSettings) {
         "use strict";
+        
+        // Store managedSettings for runtime
         var moduleId = moduleSettings.id;
-        lssm.settings.set(moduleSettings.id, moduleSettings);
         lssm.managedSettings.registeredModules[moduleId] = moduleSettings;
-    },
+        
+        // Strip down settings object to values only and persist them
+        var storeSettings = {};
+        var settingsKey;
+        for (settingsKey in moduleSettings.settings) {
+        	storeSettings[settingsKey] = moduleSettings.settings[settingsKey].value;
+        }
+        console.log(storeSettings);
+        lssm.settings.set(moduleId, storeSettings);
+    }
 
 };
 
