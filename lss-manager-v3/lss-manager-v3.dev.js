@@ -314,7 +314,7 @@ lssm.Module = {
 			en: 'Provides information about the latest updates in LSSM'
 		},
 		source: '/modules/lss-releasenotes/Releasenotes.user.js',
-		develop: false
+		develop: true
 	},
 	vonginator: {
 		name: {
@@ -993,7 +993,8 @@ lssm.appstore = {
 		lssm.modules.saveall();
 		if (action === "Reload") {
 			location.reload();
-		} else {
+        }
+        else {
 
 			$('#' + lssm.config.prefix + '_appstore_row').hide();
 			$('#content').show();
@@ -1034,7 +1035,8 @@ lssm.appstore = {
 		for (var m in lssm.Module) {
 			if (modules[m] && !lssm.Module[m].active) {
 				deactivated.push(m);
-			} else if ((!modules[m]) && lssm.Module[m].active) {
+            }
+            else if ((!modules[m]) && lssm.Module[m].active) {
 				activated.push(m);
 			}
 		}

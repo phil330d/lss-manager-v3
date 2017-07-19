@@ -3,7 +3,8 @@ var cheerio = require('cheerio');
 var path = require('path');
 var vehiclesById = require('./carsById.json');
 var fs = require('fs');
-var MAX_MISSIONS = 200;
+var START_MISSION = 1;
+var END_MISSION = 300;
 
 var missions = [];
 
@@ -17,7 +18,7 @@ function containsAny(str, substrings) {
 	return false;
 }
 
-for (var i = 0; i < MAX_MISSIONS; i++) {
+for (var i = START_MISSION; i < END_MISSION; i++) {
 	var options = {
 		host: 'www.leitstellenspiel.de',
 		path: '/einsaetze/' + i
@@ -33,7 +34,7 @@ for (var i = 0; i < MAX_MISSIONS; i++) {
 			var missionId = res.req.path.split('/').pop();
 			$ = cheerio.load(body);
 			var mission = {};
-			mission.id = missionId;
+			mission.id = parseInt(missionId);
 			mission.title = $('h1').text().trim();
 			var vehicles = {};
 
@@ -44,13 +45,13 @@ for (var i = 0; i < MAX_MISSIONS; i++) {
 				if (!key.length > 0) {
 					return;
 				} else if (key.indexOf('Credits') >= 0) {
-					mission.avg_creds = value;
+					mission.avg_creds = parseInt(value);
 				} else if (key.indexOf('Benötigte') >= 0) {
 					var found = false;
 					for (vehicleId in vehiclesById) {
 						if (containsAny(key, vehiclesById[vehicleId])) {
 							vehicles[vehicleId] = (vehicles[vehicleId]) ? vehicles[vehicleId] : {};
-							vehicles[vehicleId].required = value;
+							vehicles[vehicleId].required = parseInt(value);
 							found = true;
 							break;
 						}
@@ -63,7 +64,7 @@ for (var i = 0; i < MAX_MISSIONS; i++) {
 					for (vehicleId in vehiclesById) {
 						if (containsAny(key, vehiclesById[vehicleId])) {
 							vehicles[vehicleId] = (vehicles[vehicleId]) ? vehicles[vehicleId] : {};
-							vehicles[vehicleId].probability = value;
+							vehicles[vehicleId].probability = parseInt(value);
 							found = true;
 							break;
 						}
@@ -71,11 +72,36 @@ for (var i = 0; i < MAX_MISSIONS; i++) {
 					if (!found) {
 						console.log("Unknown2: " + key);
 					}
+				} else if (key.indexOf('Maximale Anzahl an Gefangene') >= 0) {
+					mission.maxPrisoners = parseInt(value);
+				} else if (key.indexOf('Maximale Patientenanzahl') >= 0) {
+					mission.patients = (mission.patients) ? mission.patients : {};
+					mission.patients.max = parseInt(value);
+				} else if (key.indexOf('Mindest Patientenanzahl') >= 0) {
+					mission.patients = (mission.patients) ? mission.patients : {};
+					mission.patients.min = parseInt(value);
+				} else if (key.indexOf('Fachrichtung für Patienten') >= 0) {
+					mission.patients = (mission.patients) ? mission.patients : {};
+					mission.patients.department = value;
+				} else if (key.indexOf('Wahrscheinlichkeit, dass ein Patient transportiert') >= 0) {
+					mission.patients = (mission.patients) ? mission.patients : {};
+					mission.patients.probability = parseInt(value);
 				}
+
+
 			});
 			mission.vehicles = vehicles;
 			missions.push(mission);
-			if (missions.length >= MAX_MISSIONS) {
+			if (missions.length >= END_MISSION - START_MISSION) {
+				function compare(a, b) {
+					if (a.id < b.id)
+						return -1;
+					if (a.id > b.id)
+						return 1;
+					return 0;
+				}
+
+				missions.sort(compare);
 				fs.writeFile(path.join(__dirname, '/') + 'crawlResults.json', JSON.stringify(missions), {
 					flag: 'w'
 				});
