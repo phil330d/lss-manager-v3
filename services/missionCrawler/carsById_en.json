@@ -1,0 +1,22 @@
+{
+  "0": ["Type 1 fire engine"],
+  "1": ["Type 2 fire engine"],
+  "2": ["Platform truck", "Platform Truck"],
+  "3": ["Bataillon Chief Unit", "Battalion Chief Unit"],
+  "4": ["Heavy Rescue Vehicle","Heavy Rescue"],
+  "5": ["Ambulance"],
+  "6": ["Mobile air", "Mobile Air"],
+  "7": ["Water Tanker"],
+  "8": ["Utility unit"],
+  "9": ["HazMat", "HAZMAT", "NEF"],
+  "10": ["Patrol Car", "Police Car"],
+  "11": ["HEMS"],
+  "12": ["Mobile command vehicle", "Mobile Command Vehicles"],
+  "13": ["Quint"],
+  "14": ["Policehelicopter", "Police Helicopter"],
+  "15": ["Fly-Car"],
+  "16": ["SWAT"],
+  "17": ["ARFF Crash Tender"],
+  "18": ["Rescue Engine"],
+  "1000": ["Firetrucks"]
+}
