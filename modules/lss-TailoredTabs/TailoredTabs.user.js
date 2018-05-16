@@ -6,22 +6,6 @@
         "id": SETTINGS,
         "title": 'Tailored Tabs',
         "settings": {
-            "bpol": {
-                "default": false,
-                "ui": {
-                    "label": 'Bereitschaftspolizei',
-                    "type": "toggle",
-                    "description": 'Bereitschaftspolizei in eigenem Tab'
-                }
-            },
-            "polhub": {
-                "default": false,
-                "ui": {
-                    "label": 'Polizeihubschrauber hinzufügen',
-                    "type": "checkbox",
-                    "parent": SETTINGS + "_bpol_toggle",
-                }
-            },
             "icao": {
                 "default": false,
                 "ui": {
@@ -114,17 +98,6 @@
     let isKtwMode = $('#tabs').text().trim().startsWith('Rettung');
 
     let sections = [];
-    if (getSetting('bpol') && !isKtwMode) {
-        let bpolSection = {
-            name: 'BPol',
-            short: 'bpol',
-            vehicles: [50, 51, 52, 35, 72]
-        };
-        if (getSetting('polhub')) {
-            bpolSection.vehicles.push(61);
-        }
-        sections.push(bpolSection);
-    }
     if (getSetting('icao') && !isKtwMode) {
         let icaoSection = {
             name: 'ICAO',
