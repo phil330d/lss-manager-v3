@@ -87,7 +87,7 @@
 				.t('lssm.destfilter.yes');
 			if ((beds <= 0 && getSetting('destfilter-beds')) ||
 				(!elegible && getSetting('destfilter-elegible'))) {
-				el.fadeOut();
+				el.fadeOut(1);
 			} else {
 				el.show();
 			}
